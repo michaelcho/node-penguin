@@ -3,8 +3,8 @@ include p/mixins
 
 block content
 	if model.showAddButton
-		a.pull-left.btn.btn-primary(href='#{model.path}/add'+getQueryString()) Add a New #{model.label.replace(/s$/, '')}...
-	//- console.log(model)
+		a.pull-left.btn.btn-primary(href='#{model.path}/add'+getQueryString()) Add New #{model.label}
+
 	if model.showSearchForm
 		form.form-inline.pull-right(role='form')
 			each v, n in urlQuery

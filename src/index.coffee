@@ -60,11 +60,8 @@ class Admin
 			for vt, vModel of self.opts.vModels
 				model = self.models[vModel.base]
 				vModel.slug ?= vt
-
-				#console.log vt, vModel
-
-
 				self.modelDetails[vModel.slug] = self.getModelDetails vModel
+
 			if not self.opts.menu
 				self.opts.menu = [
 					['Administration Home', self.opts.mountPath]
@@ -81,7 +78,7 @@ class Admin
 			}
 			self.resLocals.menuExtraHTML = self.opts.menuExtraHTML
 			null
-		#console.log packageJson
+
 		if 'production'==process.env.NODE_ENV
 			self.resLocals.statics = {
 				css: [
@@ -118,11 +115,10 @@ class Admin
 			models = {}
 			for modelName, model of mongoose.models
 				models[modelName] = model
-				# The following is for backwards compatibility
-				models[model.collection.name] = model
+
 			debug 'Models: obj', Object.keys(models)
 			debug 'Models: mongoose', Object.keys(mongoose.models)
-			
+
 			return done(null, models)
 
 
@@ -133,7 +129,7 @@ class Admin
 			console.error 'We only have these models:', Object.keys(self.models)
 		overrides = if vModel.slug == vModel.base then {} else defaults.model$pOverrides
 		ret = merge true, defaults.model$p, model.$p, overrides, {
-				label:	@constructor._t(vModel.slug)
+				label: @constructor._t(model.modelName)
 				path:	"#{self.opts.mountPath}/#{vModel.slug}"
 			}, vModel, {
 				obj: model
@@ -253,8 +249,8 @@ class Admin
 	setupParams: =>
 		@router.param ':collection', @pCollection
 		@router.param ':id', @pId
-			
-			
+
+
 		return
 
 	pCollection: (req, res, next)->
@@ -288,7 +284,7 @@ class Admin
 			.get			@createRouteWrapper(@rIndex, {op: 'index'})							# INDEX
 
 
-		
+
 		postMiddlewares = []
 		if true
 			postMiddlewares.push @getMulterMiddleware()
@@ -374,7 +370,7 @@ class Admin
 	_rEditEmpty: (req, res)->
 		console.log 'Form Empty'
 		#console.log req.$p.row
-		
+
 		if req.$p.addMode
 			req.$p.renderObj.form = req.$p.form
 		else
@@ -397,7 +393,7 @@ class Admin
 		#console.log form.fields
 		for field in req.$p.model.fields
 			tasks = tasks.concat field.$p.tasks
-		
+
 		async.parallel tasks, ()->
 			# An ugly hack, but apparently forms.create copy objects
 			for field in req.$p.model.fields
